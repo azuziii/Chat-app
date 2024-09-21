@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (req.url.includes('/auth')) return next.handle(req);
+    if (req.headers.get('skip')) return next.handle(req);
 
     console.log('Intercepted request to: ', req.url);
 
