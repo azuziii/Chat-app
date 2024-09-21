@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/auth.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,13 @@ export class LoginComponent {
         username: this.username,
         password: this.password,
       })
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          this.message = err;
+          return of(err);
+        })
+      )
       .subscribe();
   }
 
