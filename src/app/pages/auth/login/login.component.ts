@@ -5,6 +5,7 @@ import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/auth.service';
 import { catchError, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ import { catchError, of } from 'rxjs';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   username = '';
   password = '';
@@ -39,5 +40,7 @@ export class LoginComponent {
       .subscribe();
   }
 
-  onRegisterNavigate() {}
+  onRegisterNavigate() {
+    this.router.navigate(['/register']);
+  }
 }
