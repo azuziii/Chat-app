@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { catchError, map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { StorageService } from './storage.service';
-import { Router } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,6 @@ export class AuthService {
       }),
       catchError((err) => {
         console.log('login fail');
-        console.error(err.error.message);
         if (err.error) throw err.error.message;
         throw 'Failed to login';
       })
@@ -38,6 +37,7 @@ export class AuthService {
         this.router.navigate(['/']);
       }),
       catchError((err) => {
+        console.log('register fail');
         if (err.error) throw err.error.message;
         throw 'Failed to register';
       })
@@ -55,15 +55,30 @@ export class AuthService {
   }
 
   refresh(): Observable<any> {
-    return this.api.post('auth/refresh').pipe(
-      tap((response: any) => {
-        console.log(
-          'Recieved access token in refresh method: ',
-          response.access_token
-        );
-        this.storage.set('access_token', response.access_token);
+    return this.api
+      .post('auth/refresh', {}, { headers: { skip: 'true' } })
+      .pipe(
+        tap((response: any) => {
+          console.log(
+            'Recieved access token in refresh method: ',
+            response.access_token
+          );
+          this.storage.set('access_token', response.access_token);
+        }),
+        map((response: any) => response.access_token)
+      );
+  }
+
+  isAuthenticated(): Observable<boolean | UrlTree> {
+    return this.api.get('auth/check').pipe(
+      map(() => {
+        console.log('guard allowed route');
+        return true;
       }),
-      map((response: any) => response.access_token)
+      catchError((err) => {
+        console.log('guard protected route, message: ', err);
+        return of(this.router.createUrlTree(['/login']));
+      })
     );
   }
 }
