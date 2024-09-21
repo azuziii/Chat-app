@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, tap } from 'rxjs';
 import { StorageService } from './storage.service';
 import { Router } from '@angular/router';
 
@@ -15,21 +15,31 @@ export class AuthService {
   ) {}
 
   login(userCreds: Record<string, any>) {
-    return this.api.post('login', userCreds).pipe(
+    return this.api.post('auth/login', userCreds).pipe(
       tap((response: Record<string, any>) => {
         console.log('login success');
         this.storage.set('access_token', response['access_token'] || null);
         this.router.navigate(['/']);
+      }),
+      catchError((err) => {
+        console.log('login fail');
+        console.error(err.error.message);
+        if (err.error) throw err.error.message;
+        throw 'Failed to login';
       })
     );
   }
 
   register(userCreds: Record<string, any>) {
-    return this.api.post('register', userCreds).pipe(
+    return this.api.post('auth/register', userCreds).pipe(
       tap((response: Record<string, any>) => {
         console.log('register success');
         this.storage.set('access_token', response['access_token'] || null);
         this.router.navigate(['/']);
+      }),
+      catchError((err) => {
+        if (err.error) throw err.error.message;
+        throw 'Failed to register';
       })
     );
   }
