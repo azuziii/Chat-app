@@ -11,10 +11,14 @@ export class ApiService {
   API_URL = 'http://localhost:3000/';
 
   get(endpoint = ''): Observable<any> {
-    return this.http.get(this.API_URL + endpoint);
+    return this.http.get(this.API_URL + endpoint, {
+      withCredentials: true,
+    });
   }
 
   post(endpoint = '', body: any = {}) {
-    return this.http.post(this.API_URL + endpoint, body);
+    return this.http.post(this.API_URL + endpoint, body, {
+      withCredentials: true,
+    });
   }
 }
