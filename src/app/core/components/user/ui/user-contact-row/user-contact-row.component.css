@@ -1,0 +1,44 @@
+:host {
+  display: flex;
+  justify-content: center;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+button {
+  display: flex;
+  gap: 20px;
+  padding: 12px;
+  width: 100%;
+}
+
+div {
+  height: min-content;
+  flex: 1;
+}
+
+.user {
+  color: var(--Black, #000);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.time {
+  color: var(--Black, #000);
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.3;
+}
+
+div p:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.m {
+  max-width: 200px;
+  overflow: hidden;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
