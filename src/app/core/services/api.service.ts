@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParamsOptions } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -10,14 +10,16 @@ export class ApiService {
 
   API_URL = 'http://localhost:3000/';
 
-  get(endpoint = ''): Observable<any> {
+  get(endpoint = '', options?: {}): Observable<any> {
     return this.http.get(this.API_URL + endpoint, {
+      ...options,
       withCredentials: true,
     });
   }
 
-  post(endpoint = '', body: any = {}) {
+  post(endpoint = '', body: any = {}, options?: {}) {
     return this.http.post(this.API_URL + endpoint, body, {
+      ...options,
       withCredentials: true,
     });
   }
