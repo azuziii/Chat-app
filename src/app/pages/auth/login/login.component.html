@@ -1,0 +1,34 @@
+<form (ngSubmit)="onLogin()">
+  <p class="text-3xl font-bold">Login</p>
+  <input
+    pInputText
+    id="username"
+    name="username"
+    placeholder="Username"
+    [(ngModel)]="username"
+  />
+  <input
+    pInputText
+    [(ngModel)]="password"
+    name="password"
+    placeholder="Password"
+  />
+  @if (message) {
+  <p>{{ message }}</p>
+  }
+  <!-- <a href="/recover" class="link text-right">Forgot password? </a> -->
+  <p-button label="Login" type="submit" [style]="{ width: '100%' }" />
+</form>
+<div class="w-[300px]">
+  <p-divider layout="horizontal" styleClass="flex" [align]="'center'">
+    <b>OR</b>
+  </p-divider>
+</div>
+<div class="flex flex-col w-[300px]">
+  <p-button
+    label="Create account"
+    type="submit"
+    [style]="{ width: '100%' }"
+    (onClick)="onRegisterNavigate()"
+  />
+</div>
