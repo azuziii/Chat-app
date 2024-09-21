@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  width: 349px;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background: var(--White, #fff);
+  box-shadow: 1px 0px 0px 0px rgba(0, 0, 0, 0.08);
+}
+
+.search {
+  display: flex;
+  padding: 12px 0;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+}
+
+:host > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+ul {
+  padding: 5px 0;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  overflow: auto;
+}
+
+li {
+  align-self: stretch;
+  padding: 0 10px;
+}
