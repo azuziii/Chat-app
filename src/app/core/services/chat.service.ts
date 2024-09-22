@@ -1,8 +1,8 @@
 import { Injectable, NgZone } from '@angular/core';
-import { SocketService } from './socket.service';
 import { StorageService } from './storage.service';
 import { AuthService } from './auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,30 +27,9 @@ export class ChatService {
         isIncomming: user.username != response.username,
       });
     });
-
-    socket.on('tokenExpired', (data) => {
-      console.log(10000);
-      this.auth.refresh().subscribe({
-        next: () => {
-          socket.reconnect();
-          console.log(9999);
-        },
-      });
-    });
   }
 
-  private messagesSubject$ = new BehaviorSubject<any[]>([
-    // {
-    //   isIncomming: false,
-    //   message:
-    //     '',
-    //   time: new Date(),
-    //   user: {
-    //     profile_picture: '',
-    //     username: 'Usenm',
-    //   },
-    // },
-  ]);
+  private messagesSubject$ = new BehaviorSubject<any[]>([]);
   messages$ = this.messagesSubject$.asObservable();
 
   outgoingMessage(message: Record<string, any>) {
