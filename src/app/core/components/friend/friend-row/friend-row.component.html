@@ -1,0 +1,9 @@
+<button class="h">
+  <app-user-image [src]="user['profile_picture']" />
+  <div>
+    <p>
+      <span class="user">{{ user["username"] }}</span>
+    </p>
+  </div>
+  <p-button [label]="buttonText" (onClick)="onAction()" />
+</button>
