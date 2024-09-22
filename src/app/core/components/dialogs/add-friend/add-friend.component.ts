@@ -5,11 +5,18 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { catchError, tap } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
+import { FriendRowComponent } from '../../friend/friend-row/friend-row.component';
 
 @Component({
   selector: 'app-dialog-add-friend',
   standalone: true,
-  imports: [InputTextModule, FormsModule, ButtonModule, DialogModule],
+  imports: [
+    InputTextModule,
+    FormsModule,
+    ButtonModule,
+    DialogModule,
+    FriendRowComponent,
+  ],
   templateUrl: './add-friend.component.html',
   styleUrl: './add-friend.component.css',
 })
@@ -20,6 +27,9 @@ export class DialogAddFriendComponent {
   canClose = false;
   username: string = '';
   message = '';
+  user: Record<string, any> | null = null;
+  state = '';
+  actionMessage = '';
 
   closeDialog() {
     if (this.host) {
@@ -33,16 +43,13 @@ export class DialogAddFriendComponent {
       this.message = 'Friend name required';
     } else {
       this.api
-        .post('friend/add', {
+        .post('friend/find', {
           username: this.username,
         })
         .pipe(
           tap((r: Record<string, any>) => {
-            this.message = r['message'] || '';
-            setTimeout(() => {
-              this.visible = false;
-              this.closeDialog();
-            }, 500);
+            this.user = r['friend'];
+            this.actionMessage = this.state = r['action'];
           }),
           catchError((err) => {
             if (err.error) {
@@ -55,5 +62,12 @@ export class DialogAddFriendComponent {
         )
         .subscribe();
     }
+  }
+
+  handle() {
+    setTimeout(() => {
+      this.visible = false;
+      this.closeDialog();
+    }, 500);
   }
 }
