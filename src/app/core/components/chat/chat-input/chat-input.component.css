@@ -1,0 +1,20 @@
+:host {
+  display: grid;
+  /* grid-template-columns: auto 1fr; */
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 10px;
+  height: 60px;
+  padding: 0 20px;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.send {
+  position: absolute;
+  right: 0;
+}

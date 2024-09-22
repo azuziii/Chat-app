@@ -1,0 +1,19 @@
+<!-- <p-button icon="pi pi-paperclip" [rounded]="true" [text]="true" /> -->
+<form (ngSubmit)="onSubmit($event)">
+  <input
+    type="text"
+    pInputText
+    name="message"
+    [(ngModel)]="value"
+    class="w-full pr-[45px]"
+    placeholder="Type a message..."
+    autocomplete="off"
+  />
+  <p-button
+    icon="pi pi-send"
+    [text]="true"
+    name="password"
+    class="send"
+    type="submit"
+  />
+</form>
