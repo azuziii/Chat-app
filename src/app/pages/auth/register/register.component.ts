@@ -29,7 +29,7 @@ export class RegisterComponent {
     if (!this.password) return (this.message = "Password can't be empty");
 
     this.authService
-      .login({
+      .register({
         username: this.username,
         email: this.email,
         password: this.password,
