@@ -1,0 +1,9 @@
+<div [class.incomming]="message.isIncomming">
+  <!-- @if (data.username) {
+  <p>{{ data.username }}</p>
+  } -->
+  @if (showProfileImage) {
+  <app-user-image [src]="profilePicture" width="40" />
+  }
+  <app-message-bubble [message]="message.message" />
+</div>

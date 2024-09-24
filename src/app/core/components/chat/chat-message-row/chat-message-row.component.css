@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  /* flex-direction: row-reverse; */
+}
+
+div {
+  display: flex;
+  /* align-items: flex-end; */
+  /* justify-content: flex-end; */
+  flex-direction: row-reverse;
+  /* flex-direction: column; */
+  gap: 5px;
+  width: 100%;
+}
+
+.incomming {
+  flex-direction: row;
+}
+
+.username {
+}
