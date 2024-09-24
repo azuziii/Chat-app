@@ -72,11 +72,9 @@ export class AuthService {
   isAuthenticated(): Observable<boolean | UrlTree> {
     return this.api.get('auth/check').pipe(
       map(() => {
-        console.log('guard allowed route');
         return true;
       }),
       catchError((err) => {
-        console.log('guard protected route, message: ', err);
         return of(this.router.createUrlTree(['/login']));
       })
     );
