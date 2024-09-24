@@ -22,7 +22,7 @@ export class SocketService {
       });
   }
 
-  emit(event: string, data: any = {}, cb?: any) {
+  emit(event: string, data: any = {}) {
     this.socket.emit(event, data);
   }
 
