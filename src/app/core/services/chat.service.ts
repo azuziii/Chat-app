@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { StorageService } from './storage.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, of, switchMap, tap } from 'rxjs';
 import { SocketService } from './socket.service';
 import { AuthService } from './auth.service';
 
@@ -19,35 +19,52 @@ export class ChatService {
   constructor(
     private socket: SocketService,
     private ngZone: NgZone,
-    private storage: StorageService,
     private auth: AuthService
   ) {
     socket.on('message', (response: Message) => {
-      console.log('socket sadasd');
       this.add({
         ...response,
       });
     });
 
-    socket.on('token_expired', () => {
-      console.log(socket.socket.connected);
-      console.log('socket refresh');
-      this.auth.refresh().subscribe({
-        next: () => {
-          this.socket.connect();
-          console.log(10);
-        },
-        error: () => {
-          console.log(100);
-        },
-      });
+    socket.on('disconnect', (e) => {
+      if (this.lastMessage) {
+        this.messageQueue.push(this.lastMessage);
+        this.lastMessage = null;
+      }
+
+      this.auth
+        .isAuthenticated()
+        .pipe(
+          switchMap(() => {
+            return this.auth.refresh().pipe(
+              tap(() => {
+                this.socket.connect();
+                this.messageQueue.forEach((message) => {
+                  this.send(message.message);
+                });
+                this.messageQueue = [];
+              }),
+              catchError((err) => {
+                socket.socket.disconnect();
+                return of(err);
+              })
+            );
+          })
+        )
+        .subscribe();
     });
   }
+
+  isDisconeected = false;
+  lastMessage: { message: string } | null = null;
+  messageQueue: { message: string }[] = [];
 
   private messagesSubject$ = new BehaviorSubject<any[]>([]);
   messages$ = this.messagesSubject$.asObservable();
 
   add(message: Message) {
+    this.lastMessage = null;
     this.ngZone.run(() => {
       const currentMessages = this.messagesSubject$.value;
       this.messagesSubject$.next([...currentMessages, message]);
@@ -58,10 +75,9 @@ export class ChatService {
     const body: Partial<Message> = {
       message: textMessage,
     };
-    this.socket.emit('message', body, (resp: any) => {
-      console.log(100);
-      console.log(resp);
-      console.log(100);
-    });
+    this.lastMessage = {
+      message: textMessage,
+    };
+    this.socket.emit('message', body);
   }
 }
