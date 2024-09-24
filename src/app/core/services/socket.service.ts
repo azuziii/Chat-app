@@ -10,10 +10,10 @@ export class SocketService {
   socket: Socket;
   constructor(private storage: StorageService) {
     this.socket = io('http://localhost:3002', {
-      autoConnect: false,
-      query: {
-        access_token: this.storage.get('access_token'),
+      auth: (cb) => {
+        cb({ token: this.storage.get('access_token') });
       },
+      autoConnect: false,
     });
     inject(ApplicationRef)
       .isStable.pipe(first((isStable) => isStable))
@@ -22,11 +22,21 @@ export class SocketService {
       });
   }
 
-  emit(event: string, data: any = {}) {
+  emit(event: string, data: any = {}, cb?: any) {
     this.socket.emit(event, data);
   }
 
   on(event: string, callback: (...args: any[]) => void) {
     this.socket.on(event, callback);
+  }
+
+  connect() {
+    this.socket.connect();
+    // this.socket = io('http://localhost:3002', {
+    //   autoConnect: true,
+    //   query: {
+    //     authorization: this.storage.get('access_token'),
+    //   },
+    // });
   }
 }
