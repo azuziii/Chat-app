@@ -1,0 +1,15 @@
+:host {
+  padding: 10px;
+  background-color: #11111117;
+  border-radius: 10px;
+  max-width: 45%;
+  width: fit-content;
+}
+
+.right {
+  border-top-left-radius: 0;
+}
+
+.left {
+  border-top-right-radius: 0;
+}
