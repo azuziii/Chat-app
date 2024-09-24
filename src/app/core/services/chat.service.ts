@@ -1,8 +1,16 @@
 import { Injectable, NgZone } from '@angular/core';
 import { StorageService } from './storage.service';
-import { AuthService } from './auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { SocketService } from './socket.service';
+import { AuthService } from './auth.service';
+
+export interface Message {
+  message: string;
+  username: string;
+  profile_picture: string;
+  time: string;
+  isIncomming: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +22,24 @@ export class ChatService {
     private storage: StorageService,
     private auth: AuthService
   ) {
-    socket.on('message', (response) => {
-      console.log(response);
-      const user = storage.get('user');
+    socket.on('message', (response: Message) => {
+      console.log('socket sadasd');
       this.add({
-        user: {
-          username: response.username,
-          // profile_picture: response.profile_picture,
+        ...response,
+      });
+    });
+
+    socket.on('token_expired', () => {
+      console.log(socket.socket.connected);
+      console.log('socket refresh');
+      this.auth.refresh().subscribe({
+        next: () => {
+          this.socket.connect();
+          console.log(10);
         },
-        message: response.message,
-        time: new Date(),
-        isIncomming: user.username != response.username,
+        error: () => {
+          console.log(100);
+        },
       });
     });
   }
@@ -32,11 +47,7 @@ export class ChatService {
   private messagesSubject$ = new BehaviorSubject<any[]>([]);
   messages$ = this.messagesSubject$.asObservable();
 
-  outgoingMessage(message: Record<string, any>) {
-    this.socket.emit('message', message);
-  }
-
-  add(message: any) {
+  add(message: Message) {
     this.ngZone.run(() => {
       const currentMessages = this.messagesSubject$.value;
       this.messagesSubject$.next([...currentMessages, message]);
@@ -44,13 +55,13 @@ export class ChatService {
   }
 
   send(textMessage: string) {
-    const message = {
-      isIncomming: false,
+    const body: Partial<Message> = {
       message: textMessage,
-      time: new Date(),
-      user: this.storage.get('user'),
     };
-    this.add(message);
-    this.outgoingMessage({ message: message.message });
+    this.socket.emit('message', body, (resp: any) => {
+      console.log(100);
+      console.log(resp);
+      console.log(100);
+    });
   }
 }
