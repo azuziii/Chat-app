@@ -1,1 +1,7 @@
-<p>chat-screen works!</p>
+@for (message of messages; track $index) {
+<app-chat-message-row
+  [showProfileImage]="shouldShowProfileImage(message, $index)"
+  [isMessageIncomming]="message.isIncomming"
+  [message]="message"
+/>
+}
